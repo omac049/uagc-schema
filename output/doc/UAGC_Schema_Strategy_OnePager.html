@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schema Strategy - UAGC.edu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:#0f172a;
+    color:#e2e8f0;
+    line-height:1.55;
+    min-height:100vh;
+  }
+
+  .page{
+    max-width:860px;
+    margin:0 auto;
+    padding:40px 32px;
+  }
+
+  /* ── HERO ── */
+  .hero{
+    text-align:center;
+    padding:48px 20px 40px;
+    position:relative;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    top:-60px;left:50%;
+    transform:translateX(-50%);
+    width:500px;height:500px;
+    background:radial-gradient(circle,rgba(56,189,248,.12) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .badge{
+    display:inline-block;
+    background:rgba(56,189,248,.1);
+    border:1px solid rgba(56,189,248,.2);
+    color:#38bdf8;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    padding:6px 18px;
+    border-radius:100px;
+    margin-bottom:20px;
+  }
+  .hero h1{
+    font-size:38px;
+    font-weight:800;
+    letter-spacing:-1.2px;
+    line-height:1.15;
+    background:linear-gradient(135deg,#fff 0%,#94a3b8 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:14px;
+  }
+  .hero .subtitle{
+    font-size:16px;
+    color:#94a3b8;
+    font-weight:400;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+
+  /* ── STAT BAR ── */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:rgba(255,255,255,.06);
+    border-radius:16px;
+    overflow:hidden;
+    margin:8px 0 48px;
+  }
+  .stat{
+    text-align:center;
+    padding:22px 12px;
+    background:#0f172a;
+  }
+  .stat-icon{
+    font-size:22px;
+    margin-bottom:6px;
+  }
+  .stat-label{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    color:#64748b;
+  }
+  .stat-value{
+    font-size:13px;
+    font-weight:500;
+    color:#cbd5e1;
+    margin-top:2px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .section-head .icon{font-size:18px;}
+  .section-head h2{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:#f8fafc;
+  }
+  .section-head .line{
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,rgba(255,255,255,.1),transparent);
+  }
+
+  /* ── SCHEMA GRID ── */
+  .schema-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:12px;
+    margin-bottom:48px;
+  }
+  .schema-card{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+    padding:16px 18px;
+    transition:border-color .2s;
+  }
+  .schema-card:hover{border-color:rgba(56,189,248,.25);}
+  .schema-card .tag{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .schema-card .desc{
+    font-size:13px;
+    color:#94a3b8;
+    line-height:1.5;
+  }
+  .schema-card .desc a{
+    color:#38bdf8;
+    text-decoration:none;
+    border-bottom:1px dotted rgba(56,189,248,.4);
+    transition:border-color .2s;
+  }
+  .schema-card .desc a:hover{
+    border-bottom-color:#38bdf8;
+  }
+  .schema-card details{
+    margin-top:10px;
+  }
+  .schema-card summary{
+    font-size:11px;
+    font-weight:600;
+    color:#64748b;
+    cursor:pointer;
+    letter-spacing:.3px;
+    transition:color .2s;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  .schema-card summary::-webkit-details-marker{display:none;}
+  .schema-card summary::before{
+    content:'\25B6';
+    font-size:8px;
+    transition:transform .2s;
+    display:inline-block;
+  }
+  .schema-card details[open] summary::before{
+    transform:rotate(90deg);
+  }
+  .schema-card summary:hover{color:#94a3b8;}
+  .schema-card pre{
+    margin-top:8px;
+    background:rgba(0,0,0,.3);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:11px;
+    line-height:1.55;
+    color:#94a3b8;
+    overflow-x:auto;
+    font-family:'SF Mono',Menlo,Consolas,monospace;
+  }
+  .schema-card pre .key{color:#7dd3fc;}
+  .schema-card pre .str{color:#86efac;}
+  .schema-card pre .comment{color:#475569;font-style:italic;}
+
+  /* ── WHY IT MATTERS (horizontal cards) ── */
+  .why-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:48px;
+  }
+  .why-card{
+    background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(34,197,94,.02));
+    border:1px solid rgba(34,197,94,.12);
+    border-radius:12px;
+    padding:18px 20px;
+  }
+  .why-card h3{
+    font-size:14px;
+    font-weight:600;
+    color:#4ade80;
+    margin-bottom:4px;
+  }
+  .why-card p{
+    font-size:13px;
+    color:#94a3b8;
+    line-height:1.5;
+  }
+
+  /* ── AI CALLOUT ── */
+  .ai-section{
+    background:linear-gradient(135deg,rgba(251,146,60,.06),rgba(251,146,60,.02));
+    border:1px solid rgba(251,146,60,.15);
+    border-radius:16px;
+    padding:28px 28px 24px;
+    margin-bottom:48px;
+    position:relative;
+    overflow:hidden;
+  }
+  .ai-section::after{
+    content:'';
+    position:absolute;
+    top:-30px;right:-30px;
+    width:140px;height:140px;
+    background:radial-gradient(circle,rgba(251,146,60,.08),transparent 70%);
+    pointer-events:none;
+  }
+  .ai-section h2{
+    font-size:18px;
+    font-weight:700;
+    color:#fdba74;
+    margin-bottom:6px;
+  }
+  .ai-section .lead{
+    font-size:13.5px;
+    color:#94a3b8;
+    margin-bottom:18px;
+    max-width:580px;
+    line-height:1.6;
+  }
+  .ai-points{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  .ai-point{text-align:center;}
+  .ai-point .emoji{font-size:24px;margin-bottom:6px;}
+  .ai-point strong{
+    display:block;
+    font-size:13px;
+    color:#fb923c;
+    margin-bottom:3px;
+  }
+  .ai-point span{
+    font-size:12px;
+    color:#94a3b8;
+    line-height:1.45;
+  }
+  .ai-bottom{
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1px solid rgba(251,146,60,.1);
+    font-size:14px;
+    font-weight:500;
+    color:#f1f5f9;
+    text-align:center;
+  }
+  .ai-bottom em{
+    color:#fb923c;
+    font-style:normal;
+    font-weight:700;
+  }
+
+  /* ── ROADMAP ── */
+  .roadmap{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:48px;
+  }
+  .road-item{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+    padding:16px 18px;
+  }
+  .road-num{
+    flex-shrink:0;
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#0f172a;
+    font-size:13px;
+    font-weight:800;
+    border-radius:8px;
+  }
+  .road-item p{
+    font-size:13px;
+    color:#cbd5e1;
+    line-height:1.5;
+  }
+
+  /* ── CTA ── */
+  .cta{
+    text-align:center;
+    padding:32px 24px;
+    background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(139,92,246,.06));
+    border:1px solid rgba(56,189,248,.12);
+    border-radius:16px;
+  }
+  .cta h3{
+    font-size:20px;
+    font-weight:700;
+    color:#f8fafc;
+    margin-bottom:6px;
+  }
+  .cta .cta-sub{
+    font-size:14px;
+    color:#64748b;
+    margin-bottom:18px;
+  }
+  .cta-pills{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+  .pill{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:100px;
+    padding:8px 20px;
+    font-size:12.5px;
+    font-weight:500;
+    color:#cbd5e1;
+    transition:all .2s;
+  }
+  .pill:hover{
+    background:rgba(56,189,248,.1);
+    border-color:rgba(56,189,248,.3);
+    color:#38bdf8;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:680px){
+    .page{padding:24px 16px;}
+    .hero h1{font-size:28px;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .schema-grid{grid-template-columns:1fr;}
+    .why-grid{grid-template-columns:1fr;}
+    .ai-points{grid-template-columns:1fr;gap:12px;}
+    .roadmap{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">UAGC.edu Structured Data</div>
+    <h1>Schema That Drives<br>Search & Enrollment</h1>
+    <p class="subtitle">How structured data makes UAGC more visible, more trustworthy, and more ready for the AI-driven future of search.</p>
+  </div>
+
+  <!-- STAT BAR -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-icon">&#x1F3D7;</div>
+      <div class="stat-label">Foundation</div>
+      <div class="stat-value">Org + Site + Page</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">&#x1F4DA;</div>
+      <div class="stat-label">Content</div>
+      <div class="stat-value">Articles, Video, FAQ</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">&#x1F393;</div>
+      <div class="stat-label">Academic</div>
+      <div class="stat-value">Programs + Faculty</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">&#x1F50D;</div>
+      <div class="stat-label">Discovery</div>
+      <div class="stat-value">Lists + Site Search</div>
+    </div>
+  </div>
+
+  <!-- WHAT WE HAVE -->
+  <div class="section-head">
+    <span class="icon">&#x1F4CB;</span>
+    <h2>What We Have Today</h2>
+    <span class="line"></span>
+  </div>
+  <div class="schema-grid">
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">Foundation</div>
+      <div class="desc"><a href="https://schema.org/Organization" target="_blank">Organization</a>, <a href="https://schema.org/WebSite" target="_blank">WebSite</a>, <a href="https://schema.org/WebPage" target="_blank">WebPage</a> -- the identity layer for UAGC across every page.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"Organization"</span>,
+  <span class="key">"name"</span>: <span class="str">"University of Arizona Global Campus"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.uagc.edu"</span>,
+  <span class="key">"logo"</span>: <span class="str">"https://www.uagc.edu/logo.png"</span>,
+  <span class="key">"sameAs"</span>: [
+    <span class="str">"https://www.facebook.com/UABORAGC"</span>,
+    <span class="str">"https://www.linkedin.com/school/uagc"</span>
+  ]
+}</pre>
+      </details>
+    </div>
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">Navigation</div>
+      <div class="desc"><a href="https://schema.org/BreadcrumbList" target="_blank">BreadcrumbList</a> signals that map the Home &rarr; Section &rarr; Page hierarchy.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"BreadcrumbList"</span>,
+  <span class="key">"itemListElement"</span>: [
+    {
+      <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+      <span class="key">"position"</span>: 1,
+      <span class="key">"name"</span>: <span class="str">"Home"</span>,
+      <span class="key">"item"</span>: <span class="str">"https://www.uagc.edu"</span>
+    },
+    {
+      <span class="key">"@type"</span>: <span class="str">"ListItem"</span>,
+      <span class="key">"position"</span>: 2,
+      <span class="key">"name"</span>: <span class="str">"Online Degrees"</span>,
+      <span class="key">"item"</span>: <span class="str">"https://www.uagc.edu/online-degrees"</span>
+    }
+  ]
+}</pre>
+      </details>
+    </div>
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">Content</div>
+      <div class="desc"><a href="https://schema.org/Article" target="_blank">Article</a>, <a href="https://schema.org/BlogPosting" target="_blank">BlogPosting</a>, <a href="https://schema.org/ImageObject" target="_blank">ImageObject</a> &amp; <a href="https://schema.org/VideoObject" target="_blank">VideoObject</a> on editorial templates.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"BlogPosting"</span>,
+  <span class="key">"headline"</span>: <span class="str">"5 Tips for Online Learning Success"</span>,
+  <span class="key">"author"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Organization"</span>,
+    <span class="key">"name"</span>: <span class="str">"UAGC"</span>
+  },
+  <span class="key">"datePublished"</span>: <span class="str">"2025-09-15"</span>,
+  <span class="key">"image"</span>: <span class="str">"https://www.uagc.edu/blog/hero.jpg"</span>,
+  <span class="key">"publisher"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Organization"</span>,
+    <span class="key">"name"</span>: <span class="str">"University of Arizona Global Campus"</span>
+  }
+}</pre>
+      </details>
+    </div>
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">Q&amp;A</div>
+      <div class="desc"><a href="https://schema.org/FAQPage" target="_blank">FAQPage</a> markup on sections that genuinely contain FAQ content.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"FAQPage"</span>,
+  <span class="key">"mainEntity"</span>: [
+    {
+      <span class="key">"@type"</span>: <span class="str">"Question"</span>,
+      <span class="key">"name"</span>: <span class="str">"How do I apply to UAGC?"</span>,
+      <span class="key">"acceptedAnswer"</span>: {
+        <span class="key">"@type"</span>: <span class="str">"Answer"</span>,
+        <span class="key">"text"</span>: <span class="str">"You can apply online at uagc.edu/apply..."</span>
+      }
+    }
+  ]
+}</pre>
+      </details>
+    </div>
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">Academic</div>
+      <div class="desc"><a href="https://schema.org/Course" target="_blank">Course</a> and <a href="https://schema.org/EducationalOccupationalProgram" target="_blank">Program</a> structured data on program/course templates.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"EducationalOccupationalProgram"</span>,
+  <span class="key">"name"</span>: <span class="str">"Bachelor of Arts in Business Admin"</span>,
+  <span class="key">"provider"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Organization"</span>,
+    <span class="key">"name"</span>: <span class="str">"University of Arizona Global Campus"</span>
+  },
+  <span class="key">"educationalCredentialAwarded"</span>: <span class="str">"Bachelor's Degree"</span>,
+  <span class="key">"timeToComplete"</span>: <span class="str">"P4Y"</span>,
+  <span class="key">"programType"</span>: <span class="str">"Online"</span>
+}</pre>
+      </details>
+    </div>
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">People</div>
+      <div class="desc"><a href="https://schema.org/Person" target="_blank">Person</a> schema on professor and faculty profile pages.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"Person"</span>,
+  <span class="key">"name"</span>: <span class="str">"Dr. Jane Smith"</span>,
+  <span class="key">"jobTitle"</span>: <span class="str">"Associate Professor of Psychology"</span>,
+  <span class="key">"worksFor"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"Organization"</span>,
+    <span class="key">"name"</span>: <span class="str">"University of Arizona Global Campus"</span>
+  },
+  <span class="key">"alumniOf"</span>: <span class="str">"University of Arizona"</span>,
+  <span class="key">"image"</span>: <span class="str">"https://www.uagc.edu/faculty/jsmith.jpg"</span>
+}</pre>
+      </details>
+    </div>
+
+    <div class="schema-card">
+      <div class="tag" style="color:#38bdf8;">Discovery</div>
+      <div class="desc"><a href="https://schema.org/ItemList" target="_blank">ItemList</a> and <a href="https://schema.org/SearchAction" target="_blank">SearchAction</a> for internal search and category pages.</div>
+      <details>
+        <summary>View JSON-LD example</summary>
+        <pre>{
+  <span class="key">"@context"</span>: <span class="str">"https://schema.org"</span>,
+  <span class="key">"@type"</span>: <span class="str">"WebSite"</span>,
+  <span class="key">"url"</span>: <span class="str">"https://www.uagc.edu"</span>,
+  <span class="key">"potentialAction"</span>: {
+    <span class="key">"@type"</span>: <span class="str">"SearchAction"</span>,
+    <span class="key">"target"</span>: {
+      <span class="key">"@type"</span>: <span class="str">"EntryPoint"</span>,
+      <span class="key">"urlTemplate"</span>: <span class="str">"https://www.uagc.edu/search?q={query}"</span>
+    },
+    <span class="key">"query-input"</span>: <span class="str">"required name=query"</span>
+  }
+}</pre>
+      </details>
+    </div>
+
+  </div>
+
+  <!-- WHY IT MATTERS -->
+  <div class="section-head">
+    <span class="icon">&#x26A1;</span>
+    <h2>Why It Matters</h2>
+    <span class="line"></span>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <h3>Search Understanding</h3>
+      <p>Engines and AI interpret our pages accurately -- less guesswork, more relevance.</p>
+    </div>
+    <div class="why-card">
+      <h3>Scale from Templates</h3>
+      <p>One implementation, hundreds of pages. Consistent signals across the entire site.</p>
+    </div>
+    <div class="why-card">
+      <h3>Rich Result Eligibility</h3>
+      <p>Enhanced search displays when query intent and Google guidelines align.</p>
+    </div>
+    <div class="why-card">
+      <h3>Cleaner Site Structure</h3>
+      <p>Breadcrumbs, lists, and hierarchy signals that improve crawl clarity.</p>
+    </div>
+  </div>
+
+  <!-- AI SECTION -->
+  <div class="ai-section">
+    <h2>The AI Search Shift</h2>
+    <p class="lead">AI search summarizes and extracts rather than just listing links. Schema makes UAGC machine-readable in a world where that increasingly determines visibility.</p>
+    <div class="ai-points">
+      <div class="ai-point">
+        <div class="emoji">&#x1F3AF;</div>
+        <strong>Entity Clarity</strong>
+        <span>UAGC and its offerings interpreted accurately</span>
+      </div>
+      <div class="ai-point">
+        <div class="emoji">&#x1F916;</div>
+        <strong>Reliable Extraction</strong>
+        <span>Machines pull the right data, fewer assumptions</span>
+      </div>
+      <div class="ai-point">
+        <div class="emoji">&#x1F6E1;</div>
+        <strong>Future-Proof</strong>
+        <span>Structured content = long-term machine visibility</span>
+      </div>
+    </div>
+    <div class="ai-bottom">Schema is now about <em>machine trust</em>, not just rich snippets.</div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section-head">
+    <span class="icon">&#x1F680;</span>
+    <h2>Where We Go Next</h2>
+    <span class="line"></span>
+  </div>
+  <div class="roadmap">
+    <div class="road-item">
+      <div class="road-num">1</div>
+      <p>Expand schema coverage across all key page templates</p>
+    </div>
+    <div class="road-item">
+      <div class="road-num">2</div>
+      <p>Improve validation quality -- clean, aligned with visible content</p>
+    </div>
+    <div class="road-item">
+      <div class="road-num">3</div>
+      <p>Prioritize program &amp; admissions pages that drive enrollment</p>
+    </div>
+    <div class="road-item">
+      <div class="road-num">4</div>
+      <p>Tie to measurable impact: coverage, impressions, and CTR in Search Console</p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>What should schema investment drive?</h3>
+    <p class="cta-sub">Let's align on the outcome that matters most.</p>
+    <div class="cta-pills">
+      <span class="pill">Organic CTR</span>
+      <span class="pill">Program Visibility</span>
+      <span class="pill">Qualified Inquiries</span>
+      <span class="pill">AI-Search Presence</span>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
